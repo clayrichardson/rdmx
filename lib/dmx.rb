@@ -16,7 +16,11 @@ module Rdmx
     end
 
     def write *data
-      @port.write self.class.packetize(*data.flatten).join
+        #this is to fix stupid encoding problem
+        self.class.packetize(*data.flatten)[0..-1].each do |item|
+          item.force_encoding(Encoding::ASCII_8BIT)
+        end
+        @port.write self.class.packetize(*data.flatten).join
     end
 
     def read
